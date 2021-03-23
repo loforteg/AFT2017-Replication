@@ -91,5 +91,5 @@ clearvars filename delimiter formatSpec fileID dataArray ans raw col numericData
 additionalparamandmom(1,:) = [];
 
 %% Save to excel format
-filename = 'additionalparamandmom.xlsx';
-writetable(additionalparamandmom,filename,'Sheet',1,'Range','A1')
+filename = 'additionalparamandmom.csv';
+writetable(additionalparamandmom,filename,'Delimiter',',')
