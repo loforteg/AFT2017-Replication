@@ -25,5 +25,9 @@ jpn_ctr_ind  = 63;
 fra_ctr_ind  = 27;
 kor_ctr_ind  = 60;
 
+
 ## Load input public data
-df = CSV.read("AER1moments2007.csv", DataFrame)
+df = CSV.read("emp2dataformatlabv3.csv", DataFrame)
+df_additional = CSV.read("additionalparamandmom.csv", DataFrame)
+
+fe = df.fe
