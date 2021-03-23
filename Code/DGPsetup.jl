@@ -74,10 +74,20 @@ rank_ξ = vec(rank_ξ)
 
 
 ## Initial guesses
-B_guess = 0.05
+B_guess = 0.05  # but this is bigger than Guess_LB; why?
 fc_mean_guess = [.1; 0.5; 0.9; 0.1]
 fc_disp_guess = 1
 δ_guess = [B_guess; fc_mean_guess; fc_disp_guess]
+
+# Initial guesses will be uniformly distributed in a bigger interval:
+MS = 10
+guess_lb = [0.1  ; 0.001 ; 0.1 ; .3 ; .05 ; .5  ]
+guess_ub = [0.15 ; 0.2   ; 0.8 ; 1  ; .8  ; 1.5 ]
+
+δ_guess_all = ones(MS, size(δ_guess,1))
+δ_guess_all[1,:] = δ_guess'
+δ_guess_all[2:MS,:] = (guess_ub - guess_lb)' .* rand(MS-1, size(δ_guess,1)) +
+                    + repeat(guess_lb',MS-1,1)
 
 
 ## Simulate firms (maybe put this in another file)
@@ -138,3 +148,8 @@ fc_shock_randn = repeat(fc_shock_randn, num_draws_per_stratum*size(length_interv
 prod_draw_uniform = vec(kron(prod_draw_uniform, ones(S_fixed,1)))
 weights_prod = vec(kron(weights_prod, ones(S_fixed,1))) ./ S_fixed
 S = size(weights_prod,1)
+
+
+## Add checks in case Jia's algorithm will not work
+num_rand_checks = 100
+rand_check_matrix = rand(num_rand_checks, N)
