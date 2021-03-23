@@ -96,8 +96,12 @@ for k in 1:size(length_intervals,2)
     lb = (k-1)*num_draws_per_stratum + 1
     ub = k*num_draws_per_stratum
     prod_draw_uniform[lb:ub] = bounds_intervals[k,1] .+ rand(num_draws_per_stratum,1).*length_intervals[k,1]
-    weights_prod[lb:ub] = length_intervals[k,1] ./ num_draws_per_stratum
+    weights_prod[lb:ub] = (length_intervals[k,1] ./ num_draws_per_stratum) .* ones(num_draws_per_stratum,1)
 end
+
+# Check the weights_prod perchè ora è sbagliato!
+
 
 # Fixed cost draws according to van der Corput sequence
 S_fixed = 18000
+fc_shock_randn = 0.0 * ones(S_fixed, N)
