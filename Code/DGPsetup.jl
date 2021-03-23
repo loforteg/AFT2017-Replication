@@ -89,6 +89,35 @@ guess_ub = [0.15 ; 0.2   ; 0.8 ; 1  ; .8  ; 1.5 ]
 δ_guess_all[2:MS,:] = (guess_ub - guess_lb)' .* rand(MS-1, size(δ_guess,1)) +
                     + repeat(guess_lb',MS-1,1)
 
+# In AFT2017 codes, they then modify the guesses according to the MSRUN
+if MS > 3
+    δ_guess_all[4,:] = [0.1250; 0.0300; 0.3500; 0.8250; 0.2750; 1.2500]
+end
+
+if MS > 4
+    δ_guess_all[5,:] = [0.1240; 0.0282; 0.3524; 0.7704; 0.3609; 1.1641]
+end
+
+if MS > 5
+    δ_guess_all[6,:] = [0.1236; 0.0230; 0.1923; 0.8647; 0.3917; 0.9370]
+end
+
+if MS > 6
+    δ_guess_all[7,:] = [0.126; 0.011; 0.1; 0.5111; .2; 1.2912]
+end
+
+if MS > 7
+    δ_guess_all[8,:] = [0.126; 0.011; 0.1; 0.8; .15; .6]
+end
+
+δ_hat_all = -100 * ones(MS,length(δ_guess,1))
+fval_all = 99999 * ones(MS,1)
+exitflag_all = -100 * ones(MS,1)
+
+post_estimation = 0
+
+
+
 
 ## Simulate firms (maybe put this in another file)
 # ! Remember that bounds_intervals and length_intervals are 13x1 and 12x1 in
