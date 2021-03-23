@@ -103,5 +103,5 @@ clearvars filename delimiter formatSpec fileID dataArray ans raw col numericData
 AER1moments2007(1,:) = [];
 
 %% Save to excel format
-filename = 'AER1moments2007.xlsx';
-writetable(AER1moments2007,filename,'Sheet',1,'Range','A1')
+filename = 'AER1moments2007.csv';
+writetable(AER1moments2007,filename,'Delimiter',',')
