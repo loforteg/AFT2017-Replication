@@ -73,3 +73,31 @@ rank_ξ = ordinalrank(ξ[2:end,:]; rev = true)
 
 
 ## Initial guesses
+B_guess = 0.05
+fc_mean_guess = [.1; 0.5; 0.9; 0.1]
+fc_disp_guess = 1
+δ_guess = [B_guess; fc_mean_guess; fc_disp_guess]
+
+
+## Simulate firms (maybe put this in another file)
+# ! Remember that bounds_intervals and length_intervals are 13x1 and 12x1 in
+# the original codes
+
+bounds_intervals = [0;.2;.35;.45;.57;.7;.8;.9;.95;.98;.99;.999;1]
+# oversample more productive firms
+length_intervals = bounds_intervals[2:end] - bounds_intervals[1:end-1]
+num_draws_per_stratum = 10
+
+# Draw productivity shocks
+prod_draw_uniform = 1.0 * ones(num_draws_per_stratum*size(length_intervals,1),1)
+weights_prod = 1.0 * ones(num_draws_per_stratum*size(length_intervals,1),1)
+
+for k in 1:size(length_intervals,2)
+    lb = (k-1)*num_draws_per_stratum + 1
+    ub = k*num_draws_per_stratum
+    prod_draw_uniform[lb:ub] = bounds_intervals[k,1] .+ rand(num_draws_per_stratum,1).*length_intervals[k,1]
+    weights_prod[lb:ub] = length_intervals[k,1] ./ num_draws_per_stratum
+end
+
+# Fixed cost draws according to van der Corput sequence
+S_fixed = 18000
