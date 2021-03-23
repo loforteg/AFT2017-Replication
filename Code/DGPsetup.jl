@@ -70,6 +70,7 @@ nimportingfirms = df_additional.param_value[4,1]
 ξ = exp.(fixedeffect)
 # Sort ξ descending and get ranking (excluding US)
 rank_ξ = ordinalrank(ξ[2:end,:]; rev = true)
+rank_ξ = vec(rank_ξ)
 
 
 ## Initial guesses
@@ -98,9 +99,12 @@ for k in 1:size(length_intervals,1)
     prod_draw_uniform[lb:ub] = bounds_intervals[k,1] .+ rand(num_draws_per_stratum,1).*length_intervals[k,1]
     weights_prod[lb:ub] = (length_intervals[k,1] ./ num_draws_per_stratum) .* ones(num_draws_per_stratum,1)
 end
+prod_draw_uniform = vec(prod_draw_uniform)
+weights_prod = vec(weights_prod)
 
 
 # Fixed cost draws according to van der Corput sequence
+
 # Define function for sequence
 function vandercorput(n)
     # generate sequence of binary numbers from 1 to n
@@ -109,26 +113,28 @@ function vandercorput(n)
     for i in 1:n
         b[i,:] = digits(i; base = 2, pad = d2)'
     end
-
+    # compute weights
+    l = size(b,2)
+    w = ones(l,1)
+    for i in 1:l
+        w[i,1] = i-l-1
+    end
+    w = reverse(vec(w))
+    # get result
+    x = b * (2 .^w)
+    return x
 end
-
-
-n = 4
-d2 = size(digits(n; base = 2),1)
-b = ones(n,d2)
-for i in 1:n
-    b[i,:] = digits(i; base = 2, pad = d2)'
-end
-b
-l = size(b,2)
-w = ones(l,1)
-for i in 1:l
-    w[i,1] = i-l-1
-end
-w = vec(w)
-w = reverse(w, start = 1, stop = length(w))
-
 
 
 S_fixed = 18000
+corput_seq = vandercorput(S_fixed)
 fc_shock_randn = 0.0 * ones(S_fixed, N)
+for i in 1:N
+    fc_shock_randn[:,i] = quantile(Normal(0,1), shuffle(corput_seq))
+end
+fc_shock_randn = repeat(fc_shock_randn, num_draws_per_stratum*size(length_intervals,1),1)
+
+# Adjust productivity draw and get number of simulated firms
+prod_draw_uniform = vec(kron(prod_draw_uniform, ones(S_fixed,1)))
+weights_prod = vec(kron(weights_prod, ones(S_fixed,1))) ./ S_fixed
+S = size(weights_prod,1)
