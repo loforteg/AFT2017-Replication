@@ -92,16 +92,43 @@ num_draws_per_stratum = 10
 prod_draw_uniform = 1.0 * ones(num_draws_per_stratum*size(length_intervals,1),1)
 weights_prod = 1.0 * ones(num_draws_per_stratum*size(length_intervals,1),1)
 
-for k in 1:size(length_intervals,2)
+for k in 1:size(length_intervals,1)
     lb = (k-1)*num_draws_per_stratum + 1
     ub = k*num_draws_per_stratum
     prod_draw_uniform[lb:ub] = bounds_intervals[k,1] .+ rand(num_draws_per_stratum,1).*length_intervals[k,1]
     weights_prod[lb:ub] = (length_intervals[k,1] ./ num_draws_per_stratum) .* ones(num_draws_per_stratum,1)
 end
 
-# Check the weights_prod perchè ora è sbagliato!
-
 
 # Fixed cost draws according to van der Corput sequence
+# Define function for sequence
+function vandercorput(n)
+    # generate sequence of binary numbers from 1 to n
+    d2 = size(digits(n; base = 2),1)
+    b = 0.0 * ones(n,d2)
+    for i in 1:n
+        b[i,:] = digits(i; base = 2, pad = d2)'
+    end
+
+end
+
+
+n = 4
+d2 = size(digits(n; base = 2),1)
+b = ones(n,d2)
+for i in 1:n
+    b[i,:] = digits(i; base = 2, pad = d2)'
+end
+b
+l = size(b,2)
+w = ones(l,1)
+for i in 1:l
+    w[i,1] = i-l-1
+end
+w = vec(w)
+w = reverse(w, start = 1, stop = length(w))
+
+
+
 S_fixed = 18000
 fc_shock_randn = 0.0 * ones(S_fixed, N)
