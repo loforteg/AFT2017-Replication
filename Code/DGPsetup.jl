@@ -67,14 +67,14 @@ nimportingfirms = df_additional.param_value[4,1]
 
 κ = 4.25
 σ_tilde = (1 ./ σ) * (σ ./ (σ - 1)).^(1 - σ)
-ξ = exp.(fixedeffect)
+ξ = exp.(fixedeffect)   # sourcing potential
 # Sort ξ descending and get ranking (excluding US)
 rank_ξ = ordinalrank(ξ[2:end,:]; rev = true)
 rank_ξ = vec(rank_ξ)
 
 
 ## Initial guesses
-B_guess = 0.05  # but this is bigger than Guess_LB; why?
+B_guess = 0.05  # but this is smaller than Guess_LB; why?
 fc_mean_guess = [.1; 0.5; 0.9; 0.1]
 fc_disp_guess = 1
 δ_guess = [B_guess; fc_mean_guess; fc_disp_guess]
@@ -110,7 +110,7 @@ if MS > 7
     δ_guess_all[8,:] = [0.126; 0.011; 0.1; 0.8; .15; .6]
 end
 
-δ_hat_all = -100 * ones(MS,length(δ_guess,1))
+δ_hat_all = -100 * ones(MS, length(δ_guess))
 fval_all = 99999 * ones(MS,1)
 exitflag_all = -100 * ones(MS,1)
 

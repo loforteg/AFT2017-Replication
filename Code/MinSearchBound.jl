@@ -2,8 +2,7 @@
 
 
 ## Load packages
-using LinearAlgebra, Random, Distributions, Statistics, DataFrames
-using CSV, XLSX, StatsBase
+using LinearAlgebra, Random, Distributions, Statistics, DataFrames, StatsBase
 
 ## Set seeds and directory
 Random.seed!(1234);
