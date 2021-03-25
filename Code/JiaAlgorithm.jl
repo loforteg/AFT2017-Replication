@@ -32,17 +32,25 @@ check_matrix_lb = min.(temp, temp2)
 source_check_lb = (check_matrix_lb * ξ).^my_exp
 
 
+# Initialize upper bound and source potential matrix
+J_ub = ones(1, N)  # the upper bound is full set
+source_start_ub = (J_ub * ξ).^my_exp
+temp = repeat(J_ub, N, 1) - I
+temp2 = zeros(size(temp,1), size(temp,2))
+check_matrix_ub = max.(temp, temp2)
+source_check_ub = (check_matrix_ub * ξ).^my_exp
 
 
 
 ## Jia's lower bound algorithm
+# Something is wrong, they keep stopping at k = 2 and source domestically only
 function lowerbound(source_start, source_check, ϕ_σ_B, fc, N, ξ, my_exp, firm)
 
     # Start iteration for Marginal Benefit (MB)
     k = 1
     Z_start  = zeros(1, N)
 
-    while k < N
+    while k <= N
 
     # compute MB
         if k > 1
@@ -66,16 +74,58 @@ function lowerbound(source_start, source_check, ϕ_σ_B, fc, N, ξ, my_exp, firm
     end
 
     @label end_lb_algorithm
-    return Z_new
+    return Z_new, k
 end
 
 
 ## try and use lowerbound function
-
-
-firm = 1
-
+firm = 138
 Z_lb = lowerbound(source_start_lb, source_check_lb, ϕ_σ_B, fc, N, ξ, my_exp, firm)
 
-source_start = source_start_lb
-source_check = source_check_lb
+for firm in 1:50
+    Z_lb = lowerbound(source_start_lb, source_check_lb, ϕ_σ_B, fc, N, ξ, my_exp, firm)
+    println("$firm")
+    println("$Z_lb")
+end
+
+
+## Jia's upper bound algorithm
+function upperbound(source_start, source_check, ϕ_σ_B, fc, N, ξ, my_exp, firm)
+
+    # Start iteration for Marginal Benefit (MB)
+    k = 1
+    Z_start  = ones(1, N)
+
+    while k <= N
+
+    # compute MB
+        if k > 1
+            source_start = (Z_start * ξ).^my_exp
+            source_check = (Z_start * ξ .- ξ .* (Z_start')).^my_exp
+        end
+
+        source_potential_start = ϕ_σ_B[firm] .* source_start
+        source_potential_new_vec = ϕ_σ_B[firm] .* source_check
+
+        # generate matrix with 1 if MB positive and update set of sourcing countries
+        MB = (source_potential_start .- source_potential_new_vec' - fc[firm, :]'  .< 0)
+        Z_new = max.(Z_start - MB, zeros(size(MB,1), size(MB,2)))
+
+        if Z_start == Z_new
+            @goto end_ub_algorithm
+        end
+
+        k += 1
+        Z_start = Z_new
+    end
+
+    @label end_ub_algorithm
+    return Z_new, k
+end
+
+
+## Check if upperbound works
+firm = 138
+Z_lb = upperbound(source_start_ub, source_check_ub, ϕ_σ_B, fc, N, ξ, my_exp, firm)
+
+# Since lower and upper bound are the same I guess it works :)
