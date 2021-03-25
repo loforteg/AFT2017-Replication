@@ -14,18 +14,11 @@ cd("C:\\Users\\asus\\Desktop\\Giulia\\UBC\\Year2\\567 - Empirical IO\\AFT2017-Re
 my_exp = (σ-1)/θ
 ϕ_σ_B = δ_guess[1] * ((1 .- prod_draw_uniform).^(-1/κ)).^(σ-1)
 
-
-
 fc_mean = fc_mean_guess[1] .* ((distrw').^fc_mean_guess[2]) .* fc_mean_guess[3].^(comlang') .* exp.(-fc_mean_guess[4] .* corrup')
 
 temp = fc_shock_randn.*fc_disp_guess
-for i in 1:size(temp,1)
-    for j in 1:size(temp,2)
-        temp[i,j] = min(temp[i,j],709)  # this is v slow, there must be better way
-    end
-end
-
-fc = fc_mean .* exp.(temp)
+temp2 = 709 .* ones(size(temp,1), size(temp,2))
+fc = fc_mean .* exp.(min.(temp, temp2))
 fc[:,1] = zeros(size(fc,1),1)   # remember 0 cost of domestic sourcing (US is 1st)
 
 
@@ -33,18 +26,13 @@ fc[:,1] = zeros(size(fc,1),1)   # remember 0 cost of domestic sourcing (US is 1s
 # Initialize lower bound and source potential matrix
 J_lb = zeros(1, N)  # the lower bound is empty set
 source_start_lb = (J_lb * ξ).^my_exp
-check_matrix_lb = repeat(J_lb, N, 1) + I
-for i in 1:size(check_matrix_lb,1)
-    for j in 1:size(check_matrix_lb,2)
-        check_matrix_lb[i,j] = min(check_matrix_lb[i,j],1)
-    end
-end
+temp = repeat(J_lb, N, 1) + I
+temp2 = ones(size(temp,1), size(temp,2))
+check_matrix_lb = min.(temp, temp2)
 source_check_lb = (check_matrix_lb * ξ).^my_exp
 
-# firm = 1
 
-# source_start = source_start_lb
-# source_check = source_check_lb
+
 
 
 ## Jia's lower bound algorithm
@@ -67,13 +55,8 @@ function lowerbound(source_start, source_check, ϕ_σ_B, fc, N, ξ, my_exp, firm
 
         # generate matrix with 1 if MB positive and update set of sourcing countries
         MB = (source_potential_new_vec' - fc[firm, :] - source_potential_start .> 0)
-        Z_new = Z_start + MB
-        for i in 1:size(MB,1)
-            for j in 1:size(MB,j)
-                Z_new[i,j] = min(Z_new[i,j],1)
-            end
-        end
-
+        Z_new = min.(Z_start + MB, ones(size(MB,1), size(MB,2)))
+        
         if Z_start == Z_new
             @goto end_lb_algorithm
         end
