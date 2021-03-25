@@ -46,17 +46,17 @@ function lowerbound(source_start, source_check, ϕ_σ_B, fc, N, ξ, my_exp, firm
 
     # compute MB
         if k > 1
-            source_potential_shock_start = (Z_start * ξ).^my_exp
-            source_potential_shock_check = (Z_start * ξ + ξ .* (I - Z_start')).^my_exp
+            source_start = (Z_start * ξ).^my_exp
+            source_check = (Z_start * ξ .+ ξ .* (1 .- Z_start')).^my_exp
         end
 
         source_potential_start = ϕ_σ_B[firm] .* source_start
         source_potential_new_vec = ϕ_σ_B[firm] .* source_check
 
         # generate matrix with 1 if MB positive and update set of sourcing countries
-        MB = (source_potential_new_vec' - fc[firm, :] - source_potential_start .> 0)
+        MB = (source_potential_new_vec' - fc[firm, :]' .- source_potential_start .> 0)
         Z_new = min.(Z_start + MB, ones(size(MB,1), size(MB,2)))
-        
+
         if Z_start == Z_new
             @goto end_lb_algorithm
         end
@@ -79,8 +79,3 @@ Z_lb = lowerbound(source_start_lb, source_check_lb, ϕ_σ_B, fc, N, ξ, my_exp, 
 
 source_start = source_start_lb
 source_check = source_check_lb
-
-
-
-k = 1
-Z_start  = zeros(1, N)
