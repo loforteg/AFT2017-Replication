@@ -33,13 +33,18 @@ fc[:,1] = zeros(size(fc,1),1)   # remember 0 cost of domestic sourcing (US is 1s
 # Initialize lower bound and source potential matrix
 J_lb = zeros(1, N)  # the lower bound is empty set
 source_start_lb = (J_lb * ξ).^my_exp
-check_matrix_lb = minimum(repeat(J_lb, N, 1) + I, dims = 1)
+check_matrix_lb = repeat(J_lb, N, 1) + I
+for i in 1:size(check_matrix_lb,1)
+    for j in 1:size(check_matrix_lb,2)
+        check_matrix_lb[i,j] = min(check_matrix_lb[i,j],1)
+    end
+end
 source_check_lb = (check_matrix_lb * ξ).^my_exp
 
-firm = 1
+# firm = 1
 
-source_start = source_start_lb
-source_check = source_check_lb
+# source_start = source_start_lb
+# source_check = source_check_lb
 
 
 ## Jia's lower bound algorithm
@@ -62,7 +67,12 @@ function lowerbound(source_start, source_check, ϕ_σ_B, fc, N, ξ, my_exp, firm
 
         # generate matrix with 1 if MB positive and update set of sourcing countries
         MB = (source_potential_new_vec' - fc[firm, :] - source_potential_start .> 0)
-        Z_new = minimum(Z_start + MB, dims = 1)
+        Z_new = Z_start + MB
+        for i in 1:size(MB,1)
+            for j in 1:size(MB,j)
+                Z_new[i,j] = min(Z_new[i,j],1)
+            end
+        end
 
         if Z_start == Z_new
             @goto end_lb_algorithm
@@ -75,3 +85,19 @@ function lowerbound(source_start, source_check, ϕ_σ_B, fc, N, ξ, my_exp, firm
     @label end_lb_algorithm
     return Z_new
 end
+
+
+## try and use lowerbound function
+
+
+firm = 1
+
+Z_lb = lowerbound(source_start_lb, source_check_lb, ϕ_σ_B, fc, N, ξ, my_exp, firm)
+
+source_start = source_start_lb
+source_check = source_check_lb
+
+
+
+k = 1
+Z_start  = zeros(1, N)
