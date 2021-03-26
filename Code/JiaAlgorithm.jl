@@ -66,11 +66,13 @@ function lowerbound(source_start, source_check, ϕ_σ_B, fc, N, ξ, my_exp, firm
         Z_new = min.(Z_start + MB, ones(size(MB,1), size(MB,2)))
 
         if Z_start == Z_new
+            return Z_new
             @goto end_lb_algorithm
         end
 
         k += 1
         Z_start = Z_new
+        return Z_new
     end
 
     @label end_lb_algorithm
@@ -112,11 +114,13 @@ function upperbound(source_start, source_check, ϕ_σ_B, fc, N, ξ, my_exp, firm
         Z_new = max.(Z_start - MB, zeros(size(MB,1), size(MB,2)))
 
         if Z_start == Z_new
+            return Z_new
             @goto end_ub_algorithm
         end
 
         k += 1
         Z_start = Z_new
+        return Z_new
     end
 
     @label end_ub_algorithm
@@ -126,6 +130,21 @@ end
 
 ## Check if upperbound works
 firm = 138
-Z_lb = upperbound(source_start_ub, source_check_ub, ϕ_σ_B, fc, N, ξ, my_exp, firm)
+Z_ub = upperbound(source_start_ub, source_check_ub, ϕ_σ_B, fc, N, ξ, my_exp, firm)
 
 # Since lower and upper bound are the same I guess it works :)
+
+
+## Check if Jia's algorithm produce the same lower and upper bound
+
+Z = 1.0*ones(S,N)
+
+if Z_lb == Z_ub
+     Z[firm,:] = Z_lb
+end
+
+Z_lb != Z_ub
+
+
+
+sum(, dims = 2)
