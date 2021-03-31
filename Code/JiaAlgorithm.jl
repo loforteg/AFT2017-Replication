@@ -141,10 +141,36 @@ Z = 1.0*ones(S,N)
 
 if Z_lb == Z_ub
      Z[firm,:] = Z_lb
+elseif Z_lb != Z_ub && sum(Z_ub - Z_lb, dims = 2)[1,1] <= N - 26
+    # if the two bounds differ for less than N-26 countries
+    # (as defined in their codes)
+
+
+
+
 end
+
+
+Z_lb
+
+Z_ub
 
 Z_lb != Z_ub
 
+Z_lb == Z_ub
+
+A = zeros(1,67)
+A[1] = 1.0
+A[65] = 1.0
+
+Z_lb
+
+Z_ub
 
 
-sum(, dims = 2)
+Z_lb != Z_ub
+
+Z_lb == Z_ub
+
+A == Z_lb
+A == Z_ub
