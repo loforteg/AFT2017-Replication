@@ -162,6 +162,7 @@ Z_lb == Z_ub
 A = zeros(1,67)
 A[1] = 1.0
 A[65] = 1.0
+A
 
 Z_lb
 
@@ -174,3 +175,12 @@ Z_lb == Z_ub
 
 A == Z_lb
 A == Z_ub
+
+ind_diffZ = zeros(1,N)
+for i in 1:N
+    if A[i] == Z_lb[i]
+        ind_diffZ[i] = 0.0
+    else
+        ind_diffZ[i] = 1.0
+    end
+end
