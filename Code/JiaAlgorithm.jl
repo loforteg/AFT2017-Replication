@@ -138,49 +138,35 @@ Z_ub = upperbound(source_start_ub, source_check_ub, ϕ_σ_B, fc, N, ξ, my_exp, 
 ## Check if Jia's algorithm produce the same lower and upper bound
 
 Z = 1.0*ones(S,N)
+gap_bounds = 1.0*ones(S,1)
 
 if Z_lb == Z_ub
      Z[firm,:] = Z_lb
 elseif Z_lb != Z_ub && sum(Z_ub - Z_lb, dims = 2)[1,1] <= N - 26
     # if the two bounds differ for less than N-26 countries
     # (as defined in their codes)
-
-
-
-
-end
-
-
-Z_lb
-
-Z_ub
-
-Z_lb != Z_ub
-
-Z_lb == Z_ub
-
-A = zeros(1,67)
-A[1] = 1.0
-A[65] = 1.0
-A
-
-Z_lb
-
-Z_ub
-
-
-Z_lb != Z_ub
-
-Z_lb == Z_ub
-
-A == Z_lb
-A == Z_ub
-
-ind_diffZ = zeros(1,N)
-for i in 1:N
-    if A[i] == Z_lb[i]
-        ind_diffZ[i] = 0.0
-    else
-        ind_diffZ[i] = 1.0
+    ind_diffZ = zeros(1,N)
+    for i in 1:N
+        if A[i] == Z_lb[i]
+            ind_diffZ[i] = 0.0
+        else
+            ind_diffZ[i] = 1.0
+        end
     end
+    gap_bounds[firm] = sum(ind_diffZ)
+
+    for K in 1:Int(sum(ind_diffZ))
+        index_I = repeat([1:1:binomial(Int(sum(ind_diffZ)), K);]', K, 1)
+        # index_J = binomial(Int(sum(ind_diffZ)), K)
+        # to adjust this!
+
+
+    end
+
+
+
 end
+
+[1:1:binomial(Int(sum(ind_diffZ)), K);]
+
+binomial(5,3)
