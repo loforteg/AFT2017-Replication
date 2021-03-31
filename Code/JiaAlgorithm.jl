@@ -2,6 +2,8 @@
 
 ## Load packages
 using LinearAlgebra, Random, Distributions, Statistics, DataFrames, StatsBase
+using Combinatorics
+
 
 ## Set seeds and directory
 Random.seed!(1234);
@@ -84,12 +86,6 @@ end
 firm = 138
 Z_lb = lowerbound(source_start_lb, source_check_lb, ϕ_σ_B, fc, N, ξ, my_exp, firm)
 
-for firm in 1:50
-    Z_lb = lowerbound(source_start_lb, source_check_lb, ϕ_σ_B, fc, N, ξ, my_exp, firm)
-    println("$firm")
-    println("$Z_lb")
-end
-
 
 ## Jia's upper bound algorithm
 function upperbound(source_start, source_check, ϕ_σ_B, fc, N, ξ, my_exp, firm)
@@ -142,31 +138,44 @@ gap_bounds = 1.0*ones(S,1)
 
 if Z_lb == Z_ub
      Z[firm,:] = Z_lb
-elseif Z_lb != Z_ub && sum(Z_ub - Z_lb, dims = 2)[1,1] <= N - 26
-    # if the two bounds differ for less than N-26 countries
-    # (as defined in their codes)
+
+# I don't know how to do this part (lines 64-88 of gmm_objective.m)
+# elseif Z_lb != Z_ub && sum(Z_ub - Z_lb, dims = 2)[1,1] <= N - 26
+#    # if the two bounds differ for less than N-26 countries
+#    # (as defined in their codes)
+#    ind_diffZ = zeros(1,N)
+#    for i in 1:N
+#        if Z_ub[i] == Z_lb[i]
+#            ind_diffZ[i] = 0.0
+#        else
+#            ind_diffZ[i] = 1.0
+#        end
+#    end
+#    gap_bounds[firm] = sum(ind_diffZ)
+#
+#    K_top = Int(sum(ind_diffZ))
+#    for K in 1:K_top
+#        index_I = repeat([1:1:binomial(K_top, K);], K, 1)
+#        index_J = hcat(collect(combinations(1:K_top,K))...)'
+#   end
+else
+    print("WARNING! The sourcing strategy may not be solved correctly")
+    Z_check = repeat(Z_lb, num_rand_checks, 1)
     ind_diffZ = zeros(1,N)
     for i in 1:N
-        if A[i] == Z_lb[i]
+        if Z_ub[i] == Z_lb[i]
             ind_diffZ[i] = 0.0
         else
             ind_diffZ[i] = 1.0
         end
     end
     gap_bounds[firm] = sum(ind_diffZ)
-
-    for K in 1:Int(sum(ind_diffZ))
-        index_I = repeat([1:1:binomial(Int(sum(ind_diffZ)), K);]', K, 1)
-        # index_J = binomial(Int(sum(ind_diffZ)), K)
-        # to adjust this!
-
-
+    K_top = Int(sum(ind_diffZ))
+    K_diff = [i[2] for i in findall(x->x!=0.0, ind_diffZ)]
+    for K in 1:K_top
+        Z_check[:,K_diff[K]] = (rand_check_matrix[:,K_diff[K]] > 0.5)
     end
-
+    Z_check = [Z_check; Z_lb; Z_ub]
 
 
 end
-
-[1:1:binomial(Int(sum(ind_diffZ)), K);]
-
-binomial(5,3)
