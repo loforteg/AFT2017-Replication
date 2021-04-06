@@ -139,25 +139,9 @@ gap_bounds = 1.0*ones(S,1)
 if Z_lb == Z_ub
      Z[firm,:] = Z_lb
 
-# I don't know how to do this part (lines 64-88 of gmm_objective.m)
-# elseif Z_lb != Z_ub && sum(Z_ub - Z_lb, dims = 2)[1,1] <= N - 26
-#    # if the two bounds differ for less than N-26 countries
-#    # (as defined in their codes)
-#    ind_diffZ = zeros(1,N)
-#    for i in 1:N
-#        if Z_ub[i] == Z_lb[i]
-#            ind_diffZ[i] = 0.0
-#        else
-#            ind_diffZ[i] = 1.0
-#        end
-#    end
-#    gap_bounds[firm] = sum(ind_diffZ)
-#
-#    K_top = Int(sum(ind_diffZ))
-#    for K in 1:K_top
-#        index_I = repeat([1:1:binomial(K_top, K);], K, 1)
-#        index_J = hcat(collect(combinations(1:K_top,K))...)'
-#   end
+# I don't know how to do lines 64-88 of gmm_objective.m: the case when lower and
+# upper bounds are not too different
+
 else
     print("WARNING! The sourcing strategy may not be solved correctly")
     Z_check = repeat(Z_lb, num_rand_checks, 1)
@@ -175,7 +159,32 @@ else
     for K in 1:K_top
         Z_check[:,K_diff[K]] = (rand_check_matrix[:,K_diff[K]] > 0.5)
     end
+
+    # Use the check and both bounds to find new set of sourcing countries
     Z_check = [Z_check; Z_lb; Z_ub]
+    fc_payments = sum(Z_check .* fc[firm,:]', dims=2)
+    source_potential_shock_mat_check = (Z_check * ξ).^my_exp
+    source_potential_vec = ϕ_σ_B[firm] .* source_potential_shock_mat_check
+    tot_profit = source_potential_vec - fc_payments
+
 
 
 end
+
+
+dim1 = 10
+dim2 = 3
+ciccio = rand(dim1, dim2)
+
+
+
+
+
+
+
+
+
+
+
+
+maximum(ciccio, dims=1)
