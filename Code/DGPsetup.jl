@@ -89,7 +89,8 @@ guess_ub = [0.15 ; 0.2   ; 0.8 ; 1  ; .8  ; 1.5 ]
 δ_guess_all[2:MS,:] = (guess_ub - guess_lb)' .* rand(MS-1, size(δ_guess,1)) +
                     + repeat(guess_lb',MS-1,1)
 
-# In AFT2017 codes, they then modify the guesses according to the MSRUN
+# In AFT2017 codes, they use parallel programming with 10 cores, each using a
+# different guess for delta:
 if MS > 3
     δ_guess_all[4,:] = [0.1250; 0.0300; 0.3500; 0.8250; 0.2750; 1.2500]
 end
