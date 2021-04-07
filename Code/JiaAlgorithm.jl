@@ -166,25 +166,8 @@ else
     source_potential_shock_mat_check = (Z_check * ξ).^my_exp
     source_potential_vec = ϕ_σ_B[firm] .* source_potential_shock_mat_check
     tot_profit = source_potential_vec - fc_payments
+    loc_firm_best = findmax(tot_profit, dims = 1)[2]
 
-
-
+    # replace Z as the set of locations from Z_check that maximize profits
+    Z[firm,:] = Z_check[loc_firm_best[1][1],:]
 end
-
-
-dim1 = 10
-dim2 = 3
-ciccio = rand(dim1, dim2)
-
-
-
-
-
-
-
-
-
-
-
-
-maximum(ciccio, dims=1)
