@@ -131,9 +131,10 @@ Z_ub = upperbound(source_start_ub, source_check_ub, ϕ_σ_B, fc, N, ξ, my_exp, 
 
 
 ## Check if Jia's algorithm produce the same lower and upper bound
-function optimalset(firm, Z_lb, Z_ub, S, N, num_rand_checks, rand_check_matrix, fc, ξ, my_exp, ϕ_σ_B)
+function optimalset(Z, firm, Z_lb, Z_ub, S, N, num_rand_checks, rand_check_matrix, fc, ξ, my_exp, ϕ_σ_B)
 
     if Z_lb == Z_ub
+        print("")
         Z[firm,:] = Z_lb
 
     # I don't know how to do lines 64-88 of gmm_objective.m: the case when lower and
@@ -141,6 +142,7 @@ function optimalset(firm, Z_lb, Z_ub, S, N, num_rand_checks, rand_check_matrix, 
 
     else
         print("WARNING! The sourcing strategy may not be solved correctly")
+        print("")
         Z_check = repeat(Z_lb, num_rand_checks, 1)
         ind_diffZ = zeros(1,N)
         for i in 1:N
@@ -174,8 +176,11 @@ end
 
 
 ## Check that it works
+Z = 1.0*ones(S,N)
+gap_bounds = 1.0*ones(S,1)
+
 firm = 138
-Z = optimalset(firm, Z_lb, Z_ub, S, N, num_rand_checks, rand_check_matrix, fc, ξ, my_exp, ϕ_σ_B)
+Z = optimalset(Z, firm, Z_lb, Z_ub, S, N, num_rand_checks, rand_check_matrix, fc, ξ, my_exp, ϕ_σ_B)
 
 
 ## do loop for all firms
@@ -187,7 +192,7 @@ for firm in 1:S
     println("$firm")
     Z_lb = lowerbound(source_start_lb, source_check_lb, ϕ_σ_B, fc, N, ξ, my_exp, firm)
     Z_ub = upperbound(source_start_ub, source_check_ub, ϕ_σ_B, fc, N, ξ, my_exp, firm)
-    Z = optimalset(firm, Z_lb, Z_ub, S, N, num_rand_checks, rand_check_matrix, fc, ξ, my_exp, ϕ_σ_B)
+    Z = optimalset(Z, firm, Z_lb, Z_ub, S, N, num_rand_checks, rand_check_matrix, fc, ξ, my_exp, ϕ_σ_B)
 end
 
 
