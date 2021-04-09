@@ -17,6 +17,10 @@ function SalesAndInput(Z, ξ, σ, ϕ_σ_B, my_exp)
 end
 
 
+## Check it works
+sales, input_p_mat = SalesAndInput(Z, ξ, σ, ϕ_σ_B, my_exp)
+
+
 ## Compute statistics
 function gmmobjective(sales, input_p_mat, weights_prod, nimportingfirms, nfirmstot, shareimp_salesq1, shareimp_salesq2, US_median_dom_input, )
 
@@ -65,3 +69,7 @@ function gmmobjective(sales, input_p_mat, weights_prod, nimportingfirms, nfirmst
 
     return fval
 end
+
+
+## Check it works
+valuetominimize = gmmobjective(sales, input_p_mat, weights_prod, nimportingfirms, nfirmstot, shareimp_salesq1, shareimp_salesq2, US_median_dom_input, )
