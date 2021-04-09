@@ -133,9 +133,6 @@ Z_ub = upperbound(source_start_ub, source_check_ub, ϕ_σ_B, fc, N, ξ, my_exp, 
 ## Check if Jia's algorithm produce the same lower and upper bound
 function optimalset(firm, Z_lb, Z_ub, S, N, num_rand_checks, rand_check_matrix, fc, ξ, my_exp, ϕ_σ_B)
 
-    Z = 1.0*ones(S,N)
-    gap_bounds = 1.0*ones(S,1)
-
     if Z_lb == Z_ub
         Z[firm,:] = Z_lb
 
@@ -157,7 +154,7 @@ function optimalset(firm, Z_lb, Z_ub, S, N, num_rand_checks, rand_check_matrix, 
         K_top = Int(sum(ind_diffZ))
         K_diff = [i[2] for i in findall(x->x!=0.0, ind_diffZ)]
         for K in 1:K_top
-            Z_check[:,K_diff[K]] = (rand_check_matrix[:,K_diff[K]] > 0.5)
+            Z_check[:,K_diff[K]] = (rand_check_matrix[:,K_diff[K]] .> 0.5)
         end
 
         # Use the check and both bounds to find new set of sourcing countries
@@ -182,9 +179,16 @@ Z = optimalset(firm, Z_lb, Z_ub, S, N, num_rand_checks, rand_check_matrix, fc, �
 
 
 ## do loop for all firms
+Z = 1.0*ones(S,N)
+gap_bounds = 1.0*ones(S,1)
 
 for firm in 1:S
+    print("Firm number:")
+    println("$firm")
     Z_lb = lowerbound(source_start_lb, source_check_lb, ϕ_σ_B, fc, N, ξ, my_exp, firm)
     Z_ub = upperbound(source_start_ub, source_check_ub, ϕ_σ_B, fc, N, ξ, my_exp, firm)
     Z = optimalset(firm, Z_lb, Z_ub, S, N, num_rand_checks, rand_check_matrix, fc, ξ, my_exp, ϕ_σ_B)
 end
+
+
+firm = 14417
