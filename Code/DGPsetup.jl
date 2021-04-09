@@ -79,6 +79,7 @@ fc_mean_guess = [.1; 0.5; 0.9; 0.1]
 fc_disp_guess = 1
 δ_guess = [B_guess; fc_mean_guess; fc_disp_guess]
 
+# "all" variables are not useful here because I do not run over 10 cores
 # Initial guesses will be uniformly distributed in a bigger interval:
 MS = 10
 guess_lb = [0.1  ; 0.001 ; 0.1 ; .3 ; .05 ; .5  ]
