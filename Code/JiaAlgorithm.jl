@@ -5,8 +5,7 @@ using LinearAlgebra, Random, Distributions, Statistics, DataFrames, StatsBase
 using Combinatorics
 
 
-## Set seeds and directory
-Random.seed!(1234);
+## Set directory
 cd("C:\\Users\\asus\\Desktop\\Giulia\\UBC\\Year2\\567 - Empirical IO\\AFT2017-Replication\\Code")
 
 
@@ -132,7 +131,6 @@ Z_ub = upperbound(source_start_ub, source_check_ub, ϕ_σ_B, fc, N, ξ, my_exp, 
 
 
 ## Check if Jia's algorithm produce the same lower and upper bound
-
 function optimalset(firm, Z_lb, Z_ub, S, N, num_rand_checks, rand_check_matrix, fc, ξ, my_exp, ϕ_σ_B)
 
     Z = 1.0*ones(S,N)
@@ -181,3 +179,12 @@ end
 ## Check that it works
 firm = 138
 Z = optimalset(firm, Z_lb, Z_ub, S, N, num_rand_checks, rand_check_matrix, fc, ξ, my_exp, ϕ_σ_B)
+
+
+## do loop for all firms
+
+for firm in 1:S
+    Z_lb = lowerbound(source_start_lb, source_check_lb, ϕ_σ_B, fc, N, ξ, my_exp, firm)
+    Z_ub = upperbound(source_start_ub, source_check_ub, ϕ_σ_B, fc, N, ξ, my_exp, firm)
+    Z = optimalset(firm, Z_lb, Z_ub, S, N, num_rand_checks, rand_check_matrix, fc, ξ, my_exp, ϕ_σ_B)
+end
