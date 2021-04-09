@@ -6,7 +6,6 @@ using Combinatorics
 
 
 ## Get input purchases and sales
-# NO! PUT IT INTO THE NEXT FUNCTION
 function SalesAndInput(Z, ξ, σ, ϕ_σ_B, my_exp)
     denom = Z * ξ
     share_mat = (Z .* ξ') ./ denom
@@ -19,14 +18,7 @@ end
 
 
 ## Compute statistics
-# AGGIUNGERE ALTRI INPUT FUNCTION
-#function gmmobjective(Z, ξ, σ, ϕ_σ_B, my_exp)
-    denom = Z * ξ
-    share_mat = (Z .* ξ') ./ denom
-
-    sales = σ .* ϕ_σ_B .* (denom.^my_exp)
-    input_p_mat = ((σ - 1) ./ σ) .* sales .* share_mat
-
+function gmmobjective(sales, input_p_mat, weights_prod, nimportingfirms, nfirmstot, shareimp_salesq1, shareimp_salesq2, US_median_dom_input, )
 
     # 1. Share of firms that imports from any foreign country
     share_importers = (sum(input_p_mat.>0, dims=2)' * weights_prod)[1]  # a scalar
@@ -71,5 +63,5 @@ end
     y = [m1 m1b m2 m3]
     fval = sum(y.^2)
 
-    #return fval
-#end
+    return fval
+end
