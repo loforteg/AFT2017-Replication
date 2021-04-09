@@ -171,7 +171,8 @@ S_fixed = 180
 corput_seq = vandercorput(S_fixed)
 fc_shock_randn = 0.0 * ones(S_fixed, N)
 for i in 1:N
-    fc_shock_randn[:,i] = quantile(Normal(0,1), shuffle(corput_seq))
+    fc_shock_randn[:,i] = quantile.(Normal(0,1), shuffle(corput_seq))
+    # quantile(d,X) is deprecated; use quantile.(d,X) instead
 end
 fc_shock_randn = repeat(fc_shock_randn, num_draws_per_stratum*size(length_intervals,1),1)
 
