@@ -165,8 +165,9 @@ function vandercorput(n)
     return x
 end
 
-
-S_fixed = 18000
+# in original paper S_fixed = 18000 and then S = 2160000; but I do not have so
+# much computational power, so I will reduce the amount of simulated firms
+S_fixed = 180
 corput_seq = vandercorput(S_fixed)
 fc_shock_randn = 0.0 * ones(S_fixed, N)
 for i in 1:N
