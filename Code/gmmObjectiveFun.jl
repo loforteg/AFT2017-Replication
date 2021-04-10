@@ -1,5 +1,11 @@
 # Constructs the GMM objective function: constructs all stats
 
+## Define module and things to be exported
+module gmmObjectiveFun
+
+export SalesAndInput, gmmobjective
+
+
 ## Load packages
 using LinearAlgebra, Random, Distributions, Statistics, DataFrames, StatsBase
 using Combinatorics
@@ -17,12 +23,8 @@ function SalesAndInput(Z, ξ, σ, ϕ_σ_B, my_exp)
 end
 
 
-## Check it works
-sales, input_p_mat = SalesAndInput(Z, ξ, σ, ϕ_σ_B, my_exp)
-
-
 ## Compute statistics
-function gmmobjective(sales, input_p_mat, weights_prod, nimportingfirms, nfirmstot, shareimp_salesq1, shareimp_salesq2, US_median_dom_input, )
+function gmmobjective(sales, input_p_mat, weights_prod, nimportingfirms, nfirmstot, shareimp_salesq1, shareimp_salesq2, US_median_dom_input, N)
 
     # 1. Share of firms that imports from any foreign country
     share_importers = (sum(input_p_mat.>0, dims=2)' * weights_prod)[1]  # a scalar
@@ -71,5 +73,4 @@ function gmmobjective(sales, input_p_mat, weights_prod, nimportingfirms, nfirmst
 end
 
 
-## Check it works
-valuetominimize = gmmobjective(sales, input_p_mat, weights_prod, nimportingfirms, nfirmstot, shareimp_salesq1, shareimp_salesq2, US_median_dom_input, )
+end     # end module
