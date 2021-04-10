@@ -1,4 +1,6 @@
-# Constructs the GMM objective function: constructs all stats
+"""
+This file constructs the functions computing the moments to be minimized.
+"""
 
 ## Define module and things to be exported
 module gmmObjectiveFun
@@ -24,7 +26,7 @@ end
 
 
 ## Compute statistics
-function gmmobjective(sales, input_p_mat, weights_prod, nimportingfirms, nfirmstot, shareimp_salesq1, shareimp_salesq2, US_median_dom_input, N)
+function gmmobjective(sales, input_p_mat, weights_prod, nimportingfirms, nfirms, nfirmstot, shareimp_salesq1, shareimp_salesq2, US_median_dom_input, N)
 
     # 1. Share of firms that imports from any foreign country
     share_importers = (sum(input_p_mat.>0, dims=2)' * weights_prod)[1]  # a scalar
