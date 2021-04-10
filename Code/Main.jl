@@ -137,7 +137,7 @@ post_estimation = 0
 
 ## Simulate firms
 S, prod_draw_uniform, weights_prod, fc_shock_randn, num_rand_checks,
-    rand_check_matrix = simulatefirms(N)
+    rand_check_matrix = simulatefirms(N; S_fixed = 180)
 
 
 ## Find optimal set of sourcing countries
@@ -169,4 +169,4 @@ end
 ## Compute the gmm objective function
 sales, input_p_mat = SalesAndInput(Z, ξ, σ, ϕ_σ_B, my_exp)
 
-valuetominimize = gmmobjective(sales, input_p_mat, weights_prod, nimportingfirms, nfirmstot, shareimp_salesq1, shareimp_salesq2, US_median_dom_input, N)
+valuetominimize = gmmobjective(sales, input_p_mat, weights_prod, nimportingfirms, nfirms, nfirmstot, shareimp_salesq1, shareimp_salesq2, US_median_dom_input, N)
