@@ -87,7 +87,7 @@ function simulatefirms(N)
     rand_check_matrix = rand(num_rand_checks, N)
 
 
-    return S, prod_draw_uniform, weights_prod, fc_shock_randn, rand_check_matrix
+    return S, prod_draw_uniform, weights_prod, fc_shock_randn, num_rand_checks, rand_check_matrix
 end
 
 
