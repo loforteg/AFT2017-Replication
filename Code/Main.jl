@@ -136,7 +136,8 @@ post_estimation = 0
 
 
 ## Simulate firms
-S, prod_draw_uniform, weights_prod, fc_shock_randn, num_rand_checks, rand_check_matrix = simulatefirms(N)
+S, prod_draw_uniform, weights_prod, fc_shock_randn, num_rand_checks,
+    rand_check_matrix = simulatefirms(N)
 
 
 ## Find optimal set of sourcing countries
@@ -161,5 +162,5 @@ for firm in 1:S
     println("$firm")
     Z_lb = lowerbound(source_start_lb, source_check_lb, ϕ_σ_B, fc, N, ξ, my_exp, firm)
     Z_ub = upperbound(source_start_ub, source_check_ub, ϕ_σ_B, fc, N, ξ, my_exp, firm)
-    Z = optimalset(Z, firm, Z_lb, Z_ub, S, N, num_rand_checks, rand_check_matrix, fc, ξ, my_exp, ϕ_σ_B)
+    Z = optimalset(Z, gap_bounds, firm, Z_lb, Z_ub, S, N, num_rand_checks, rand_check_matrix, fc, ξ, my_exp, ϕ_σ_B)
 end
