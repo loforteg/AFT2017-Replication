@@ -1,45 +1,28 @@
 # Construct functions for Jia's algorithm lower and upper bounds
 
+
+## Define module and things to be exported
+module JiaAlgorithm
+
+export lowerbound_setup, lowerbound, upperbound_setup, upperbound, optimalset
+
+
 ## Load packages
 using LinearAlgebra, Random, Distributions, Statistics, DataFrames, StatsBase
 using Combinatorics
 
 
-## Set directory
-cd("C:\\Users\\asus\\Desktop\\Giulia\\UBC\\Year2\\567 - Empirical IO\\AFT2017-Replication\\Code")
+## Initialize lower bound and source potential matrix
+function lowerbound_setup(N, ξ, my_exp)
+    J_lb = zeros(1, N)  # the lower bound is empty set
+    source_start_lb = (J_lb * ξ).^my_exp
+    temp = repeat(J_lb, N, 1) + I
+    temp2 = ones(size(temp,1), size(temp,2))
+    check_matrix_lb = min.(temp, temp2)
+    source_check_lb = (check_matrix_lb * ξ).^my_exp
 
-
-## These are set outside, before calling the JiaAlgorithm for each simulated firm
-
-# Set paramaters
-my_exp = (σ-1)/θ
-ϕ_σ_B = δ_guess[1] * ((1 .- prod_draw_uniform).^(-1/κ)).^(σ-1)
-
-fc_mean = fc_mean_guess[1] .* ((distrw').^fc_mean_guess[2]) .* fc_mean_guess[3].^(comlang') .* exp.(-fc_mean_guess[4] .* corrup')
-
-temp = fc_shock_randn.*fc_disp_guess
-temp2 = 709 .* ones(size(temp,1), size(temp,2))
-fc = fc_mean .* exp.(min.(temp, temp2))
-fc[:,1] = zeros(size(fc,1),1)   # remember 0 cost of domestic sourcing (US is 1st)
-
-
-
-# Initialize lower bound and source potential matrix
-J_lb = zeros(1, N)  # the lower bound is empty set
-source_start_lb = (J_lb * ξ).^my_exp
-temp = repeat(J_lb, N, 1) + I
-temp2 = ones(size(temp,1), size(temp,2))
-check_matrix_lb = min.(temp, temp2)
-source_check_lb = (check_matrix_lb * ξ).^my_exp
-
-
-# Initialize upper bound and source potential matrix
-J_ub = ones(1, N)  # the upper bound is full set
-source_start_ub = (J_ub * ξ).^my_exp
-temp = repeat(J_ub, N, 1) - I
-temp2 = zeros(size(temp,1), size(temp,2))
-check_matrix_ub = max.(temp, temp2)
-source_check_ub = (check_matrix_ub * ξ).^my_exp
+    return source_start_lb, source_check_lb
+end
 
 
 
@@ -81,9 +64,18 @@ function lowerbound(source_start, source_check, ϕ_σ_B, fc, N, ξ, my_exp, firm
 end
 
 
-## try and use lowerbound function
-firm = 138
-Z_lb = lowerbound(source_start_lb, source_check_lb, ϕ_σ_B, fc, N, ξ, my_exp, firm)
+## Initialize upper bound and source potential matrix
+function upperbound_setup(N, ξ, my_exp)
+    J_ub = ones(1, N)  # the upper bound is full set
+    source_start_ub = (J_ub * ξ).^my_exp
+    temp = repeat(J_ub, N, 1) - I
+    temp2 = zeros(size(temp,1), size(temp,2))
+    check_matrix_ub = max.(temp, temp2)
+    source_check_ub = (check_matrix_ub * ξ).^my_exp
+
+    return source_start_ub, source_check_ub
+end
+
 
 
 ## Jia's upper bound algorithm
@@ -122,12 +114,6 @@ function upperbound(source_start, source_check, ϕ_σ_B, fc, N, ξ, my_exp, firm
     return Z_new, k
 end
 
-
-## Check if upperbound works
-firm = 138
-Z_ub = upperbound(source_start_ub, source_check_ub, ϕ_σ_B, fc, N, ξ, my_exp, firm)
-
-# Since lower and upper bound are the same I guess it works :)
 
 
 ## Check if Jia's algorithm produce the same lower and upper bound
@@ -175,25 +161,4 @@ function optimalset(Z, firm, Z_lb, Z_ub, S, N, num_rand_checks, rand_check_matri
 end
 
 
-## Check that it works
-Z = 1.0*ones(S,N)
-gap_bounds = 1.0*ones(S,1)
-
-firm = 138
-Z = optimalset(Z, firm, Z_lb, Z_ub, S, N, num_rand_checks, rand_check_matrix, fc, ξ, my_exp, ϕ_σ_B)
-
-
-## do loop for all firms
-Z = 1.0*ones(S,N)
-gap_bounds = 1.0*ones(S,1)
-
-for firm in 1:S
-    print("Firm number:")
-    println("$firm")
-    Z_lb = lowerbound(source_start_lb, source_check_lb, ϕ_σ_B, fc, N, ξ, my_exp, firm)
-    Z_ub = upperbound(source_start_ub, source_check_ub, ϕ_σ_B, fc, N, ξ, my_exp, firm)
-    Z = optimalset(Z, firm, Z_lb, Z_ub, S, N, num_rand_checks, rand_check_matrix, fc, ξ, my_exp, ϕ_σ_B)
-end
-
-
-firm = 14417
+end     # end module
