@@ -1,5 +1,7 @@
-# Construct functions for Jia's algorithm lower and upper bounds
-
+"""
+This file constructs the functions to find lower and upper bound of optimal
+set of sourcing countries according to Jia's algorithm. 
+"""
 
 ## Define module and things to be exported
 module JiaAlgorithm
