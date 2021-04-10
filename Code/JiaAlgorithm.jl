@@ -117,7 +117,7 @@ end
 
 
 ## Check if Jia's algorithm produce the same lower and upper bound
-function optimalset(Z, firm, Z_lb, Z_ub, S, N, num_rand_checks, rand_check_matrix, fc, ξ, my_exp, ϕ_σ_B)
+function optimalset(Z, gap_bounds, firm, Z_lb, Z_ub, S, N, num_rand_checks, rand_check_matrix, fc, ξ, my_exp, ϕ_σ_B)
 
     if Z_lb == Z_ub
         print("")
