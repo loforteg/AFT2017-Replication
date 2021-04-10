@@ -1,4 +1,3 @@
-# SET UP THE DATA GENERATING PROCESS
 """
 This file simulates the set of firms for step 3 of AFT2017.
 """
@@ -43,7 +42,9 @@ end
 # ! Remember that bounds_intervals and length_intervals are 13x1 and 12x1 in
 # the original codes
 
-function simulatefirms(N)
+function simulatefirms(N; S_fixed = 18000)
+    # in original paper S_fixed = 18000 and then S = 2160000; but I do not have so
+    # much computational power, so I will reduce the amount of simulated firms
 
     bounds_intervals = [0;.2;.35;.45;.57;.7;.8;.9;.95;.98;.99;.999;1]
     # oversample more productive firms
@@ -65,9 +66,6 @@ function simulatefirms(N)
 
 
     # Draw fixed costs from van der Corput sequence
-    # in original paper S_fixed = 18000 and then S = 2160000; but I do not have so
-    # much computational power, so I will reduce the amount of simulated firms
-    S_fixed = 180
     corput_seq = vandercorput(S_fixed)
     fc_shock_randn = 0.0 * ones(S_fixed, N)
     for i in 1:N
