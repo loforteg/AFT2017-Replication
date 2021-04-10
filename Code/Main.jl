@@ -16,7 +16,7 @@ Third, it finds optimal parameters according to GMM:
 cd("C:\\Users\\asus\\Desktop\\Giulia\\UBC\\Year2\\567 - Empirical IO\\AFT2017-Replication\\Code")
 
 ## Use/Import modules
-using Main.DGPsetup, Main.JiaAlgorithm
+using Main.DGPsetup, Main.JiaAlgorithm, Main.gmmObjectiveFun
 
 
 ## Load packages
@@ -164,3 +164,9 @@ for firm in 1:S
     Z_ub = upperbound(source_start_ub, source_check_ub, ϕ_σ_B, fc, N, ξ, my_exp, firm)
     Z = optimalset(Z, gap_bounds, firm, Z_lb, Z_ub, S, N, num_rand_checks, rand_check_matrix, fc, ξ, my_exp, ϕ_σ_B)
 end
+
+
+## Compute the gmm objective function
+sales, input_p_mat = SalesAndInput(Z, ξ, σ, ϕ_σ_B, my_exp)
+
+valuetominimize = gmmobjective(sales, input_p_mat, weights_prod, nimportingfirms, nfirmstot, shareimp_salesq1, shareimp_salesq2, US_median_dom_input, N)
