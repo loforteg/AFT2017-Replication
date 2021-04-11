@@ -21,7 +21,7 @@ using Main.DGPsetup, Main.JiaAlgorithm, Main.gmmObjectiveFun
 
 ## Load packages
 using LinearAlgebra, Random, Distributions, Statistics, DataFrames
-using CSV, XLSX, StatsBase
+using CSV, XLSX, StatsBase, BlackBoxOptim
 
 ## Set seeds
 Random.seed!(6)
@@ -93,9 +93,13 @@ fc_mean_guess = [.1; 0.5; 0.9; 0.1]
 fc_disp_guess = 1
 δ_guess = [B_guess; fc_mean_guess; fc_disp_guess]
 
+lb = 1e-006 * ones(size(δ_guess))
+ub = 10 * ones(size(δ_guess))
+ub[6] = 6.00
+
 
 ## Allow cores to start from different guesses [useless since I do not use them]
-# [I guess I could eliminate lines 99-135]
+# [I guess I could eliminate lines 99-139]
 # Initial guesses will be uniformly distributed in a bigger interval:
 MS = 10
 guess_lb = [0.1  ; 0.001 ; 0.1 ; .3 ; .05 ; .5  ]
@@ -140,33 +144,50 @@ S, prod_draw_uniform, weights_prod, fc_shock_randn, num_rand_checks,
     rand_check_matrix = simulatefirms(N; S_fixed = 180)
 
 
-## Find optimal set of sourcing countries
-# Set paramaters
-my_exp = (σ-1)/θ
-ϕ_σ_B = δ_guess[1] * ((1 .- prod_draw_uniform).^(-1/κ)).^(σ-1)
-fc_mean = fc_mean_guess[1] .* ((distrw').^fc_mean_guess[2]) .* fc_mean_guess[3].^(comlang') .* exp.(-fc_mean_guess[4] .* corrup')
-temp = fc_shock_randn.*fc_disp_guess
-temp2 = 709 .* ones(size(temp,1), size(temp,2))
-fc = fc_mean .* exp.(min.(temp, temp2))
-fc[:,1] = zeros(size(fc,1),1)   # remember 0 cost of domestic sourcing (US is 1st)
+## Define the problem as a function of δ_guess
+function objectivefunction(δ_guess, σ, θ, κ, distrw, comlang, corrup, N, ξ,
+    S, prod_draw_uniform, weights_prod, fc_shock_randn, num_rand_checks,
+    rand_check_matrix, nimportingfirms, nfirms, nfirmstot, shareimp_salesq1,
+    shareimp_salesq2, US_median_dom_input)
 
-# do loop for all simulated firms
-Z = 1.0*ones(S,N)
-gap_bounds = 1.0*ones(S,1)
+    ## Find optimal set of sourcing countries
+    # Set paramaters
+    my_exp = (σ-1)/θ
+    ϕ_σ_B = δ_guess[1] * ((1 .- prod_draw_uniform).^(-1/κ)).^(σ-1)
+    fc_mean = δ_guess[2] .* ((distrw').^δ_guess[3]) .* δ_guess[4].^(comlang') .* exp.(-δ_guess[5] .* corrup')
+    temp = fc_shock_randn.*δ_guess[6]
+    temp2 = 709 .* ones(size(temp,1), size(temp,2))
+    fc = fc_mean .* exp.(min.(temp, temp2))
+    fc[:,1] = zeros(size(fc,1),1)   # remember 0 cost of domestic sourcing (US is 1st)
 
-source_start_lb, source_check_lb = lowerbound_setup(N, ξ, my_exp)
-source_start_ub, source_check_ub = upperbound_setup(N, ξ, my_exp)
+    # do loop for all simulated firms
+    Z = 1.0*ones(S,N)
+    gap_bounds = 1.0*ones(S,1)
 
-for firm in 1:S
-    print("Firm number:")
-    println("$firm")
-    Z_lb = lowerbound(source_start_lb, source_check_lb, ϕ_σ_B, fc, N, ξ, my_exp, firm)
-    Z_ub = upperbound(source_start_ub, source_check_ub, ϕ_σ_B, fc, N, ξ, my_exp, firm)
-    Z = optimalset(Z, gap_bounds, firm, Z_lb, Z_ub, S, N, num_rand_checks, rand_check_matrix, fc, ξ, my_exp, ϕ_σ_B)
+    source_start_lb, source_check_lb = lowerbound_setup(N, ξ, my_exp)
+    source_start_ub, source_check_ub = upperbound_setup(N, ξ, my_exp)
+
+    for firm in 1:S
+        print("Firm number:")
+        println("$firm")
+        Z_lb = lowerbound(source_start_lb, source_check_lb, ϕ_σ_B, fc, N, ξ, my_exp, firm)
+        Z_ub = upperbound(source_start_ub, source_check_ub, ϕ_σ_B, fc, N, ξ, my_exp, firm)
+        Z = optimalset(Z, gap_bounds, firm, Z_lb, Z_ub, S, N, num_rand_checks,
+            rand_check_matrix, fc, ξ, my_exp, ϕ_σ_B)
+    end
+
+    ## Compute the gmm objective function
+    sales, input_p_mat = SalesAndInput(Z, ξ, σ, ϕ_σ_B, my_exp)
+    valuetominimize = gmmobjective(sales, input_p_mat, weights_prod,
+        nimportingfirms, nfirms, nfirmstot, shareimp_salesq1, shareimp_salesq2,
+        US_median_dom_input, N)
+
+    return valuetominimize
 end
 
 
-## Compute the gmm objective function
-sales, input_p_mat = SalesAndInput(Z, ξ, σ, ϕ_σ_B, my_exp)
 
-valuetominimize = gmmobjective(sales, input_p_mat, weights_prod, nimportingfirms, nfirms, nfirmstot, shareimp_salesq1, shareimp_salesq2, US_median_dom_input, N)
+objectivefunction(δ_guess, σ, θ, κ, distrw, comlang, corrup, N, ξ,
+    S, prod_draw_uniform, weights_prod, fc_shock_randn, num_rand_checks,
+    rand_check_matrix, nimportingfirms, nfirms, nfirmstot, shareimp_salesq1,
+    shareimp_salesq2, US_median_dom_input)
