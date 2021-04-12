@@ -194,6 +194,7 @@ objectivefunction(δ_guess, σ, θ, κ, distrw, comlang, corrup, N, ξ,
 
 
 ## Solve using Optim
+# Try this first thing tomorrow!
 δ_star_unbounded = optimize(δ->objectivefunction(δ, σ, θ, κ, distrw, comlang, corrup,
         N, ξ, S, prod_draw_uniform, weights_prod, fc_shock_randn, num_rand_checks,
         rand_check_matrix, nimportingfirms, nfirms, nfirmstot, shareimp_salesq1,
@@ -201,6 +202,7 @@ objectivefunction(δ_guess, σ, θ, κ, distrw, comlang, corrup, N, ξ,
 
 
 ## Solve using BlackBoxOptim with same search range for all values of δ
+# It has been runnig for 13 hours without finding a solution (I interrupted Julia)
 δ_star = bboptimize(δ->objectivefunction(δ, σ, θ, κ, distrw, comlang, corrup,
         N, ξ, S, prod_draw_uniform, weights_prod, fc_shock_randn, num_rand_checks,
         rand_check_matrix, nimportingfirms, nfirms, nfirmstot, shareimp_salesq1,
