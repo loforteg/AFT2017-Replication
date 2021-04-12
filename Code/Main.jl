@@ -21,7 +21,7 @@ using Main.DGPsetup, Main.JiaAlgorithm, Main.gmmObjectiveFun
 
 ## Load packages
 using LinearAlgebra, Random, Distributions, Statistics, DataFrames
-using CSV, XLSX, StatsBase, BlackBoxOptim
+using CSV, XLSX, StatsBase, Optim, BlackBoxOptim
 
 ## Set seeds
 Random.seed!(6)
@@ -186,15 +186,22 @@ function objectivefunction(δ_guess, σ, θ, κ, distrw, comlang, corrup, N, ξ,
 end
 
 
-
+# check it works
 objectivefunction(δ_guess, σ, θ, κ, distrw, comlang, corrup, N, ξ,
     S, prod_draw_uniform, weights_prod, fc_shock_randn, num_rand_checks,
     rand_check_matrix, nimportingfirms, nfirms, nfirmstot, shareimp_salesq1,
     shareimp_salesq2, US_median_dom_input)
 
 
-## Solve using same search range for all values of δ
-δ_start = bboptimize(δ->objectivefunction(δ, σ, θ, κ, distrw, comlang, corrup,
+## Solve using Optim
+δ_star_unbounded = optimize(δ->objectivefunction(δ, σ, θ, κ, distrw, comlang, corrup,
+        N, ξ, S, prod_draw_uniform, weights_prod, fc_shock_randn, num_rand_checks,
+        rand_check_matrix, nimportingfirms, nfirms, nfirmstot, shareimp_salesq1,
+        shareimp_salesq2, US_median_dom_input), δ_guess)
+
+
+## Solve using BlackBoxOptim with same search range for all values of δ
+δ_star = bboptimize(δ->objectivefunction(δ, σ, θ, κ, distrw, comlang, corrup,
         N, ξ, S, prod_draw_uniform, weights_prod, fc_shock_randn, num_rand_checks,
         rand_check_matrix, nimportingfirms, nfirms, nfirmstot, shareimp_salesq1,
         shareimp_salesq2, US_median_dom_input); SearchRange = (1e-006, 10.0),
@@ -205,9 +212,9 @@ objectivefunction(δ_guess, σ, θ, κ, distrw, comlang, corrup, N, ξ,
 
 # This range is not supported. I think I have to write it in the function
 searchrange = [(1e-006,10), (1e-006,10), (1e-006,10), (1e-006,10),
-                    (1e-006,10),(1e-006,6)]
+                    (1e-006,10), (1e-006,6)]
 
-δ_start = bboptimize(δ->objectivefunction(δ, σ, θ, κ, distrw, comlang, corrup,
+δ_star = bboptimize(δ->objectivefunction(δ, σ, θ, κ, distrw, comlang, corrup,
             N, ξ, S, prod_draw_uniform, weights_prod, fc_shock_randn, num_rand_checks,
             rand_check_matrix, nimportingfirms, nfirms, nfirmstot, shareimp_salesq1,
             shareimp_salesq2, US_median_dom_input); SearchRange = searchrange)
