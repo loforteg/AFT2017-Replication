@@ -191,3 +191,23 @@ objectivefunction(δ_guess, σ, θ, κ, distrw, comlang, corrup, N, ξ,
     S, prod_draw_uniform, weights_prod, fc_shock_randn, num_rand_checks,
     rand_check_matrix, nimportingfirms, nfirms, nfirmstot, shareimp_salesq1,
     shareimp_salesq2, US_median_dom_input)
+
+
+## Solve using same search range for all values of δ
+δ_start = bboptimize(δ->objectivefunction(δ, σ, θ, κ, distrw, comlang, corrup,
+        N, ξ, S, prod_draw_uniform, weights_prod, fc_shock_randn, num_rand_checks,
+        rand_check_matrix, nimportingfirms, nfirms, nfirmstot, shareimp_salesq1,
+        shareimp_salesq2, US_median_dom_input); SearchRange = (1e-006, 10.0),
+        NumDimensions = 6)
+
+
+## Solve using a smaller upper bound for δ[6]
+
+# This range is not supported. I think I have to write it in the function
+searchrange = [(1e-006,10), (1e-006,10), (1e-006,10), (1e-006,10),
+                    (1e-006,10),(1e-006,6)]
+
+δ_start = bboptimize(δ->objectivefunction(δ, σ, θ, κ, distrw, comlang, corrup,
+            N, ξ, S, prod_draw_uniform, weights_prod, fc_shock_randn, num_rand_checks,
+            rand_check_matrix, nimportingfirms, nfirms, nfirmstot, shareimp_salesq1,
+            shareimp_salesq2, US_median_dom_input); SearchRange = searchrange)
