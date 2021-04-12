@@ -1,6 +1,6 @@
 """
 This file constructs the functions to find lower and upper bound of optimal
-set of sourcing countries according to Jia's algorithm. 
+set of sourcing countries according to Jia's algorithm.
 """
 
 ## Define module and things to be exported
@@ -130,7 +130,8 @@ function optimalset(Z, gap_bounds, firm, Z_lb, Z_ub, S, N, num_rand_checks, rand
 
     else
         print("WARNING! The sourcing strategy may not be solved correctly")
-        print("")
+        print("for firm number")
+        prinln("$firm")
         Z_check = repeat(Z_lb, num_rand_checks, 1)
         ind_diffZ = zeros(1,N)
         for i in 1:N
