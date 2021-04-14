@@ -18,7 +18,6 @@ cd("C:\\Users\\asus\\Desktop\\Giulia\\UBC\\Year2\\567 - Empirical IO\\AFT2017-Re
 ## Use/Import modules
 using Main.DGPsetup, Main.JiaAlgorithm, Main.gmmObjectiveFun
 
-
 ## Load packages
 using LinearAlgebra, Random, Distributions, Statistics, DataFrames
 using CSV, XLSX, StatsBase, Optim, BlackBoxOptim
@@ -185,7 +184,6 @@ function objectivefunction(δ_guess, σ, θ, κ, distrw, comlang, corrup, N, ξ,
     return valuetominimize
 end
 
-
 # check it works
 objectivefunction(δ_guess, σ, θ, κ, distrw, comlang, corrup, N, ξ,
     S, prod_draw_uniform, weights_prod, fc_shock_randn, num_rand_checks,
@@ -211,7 +209,6 @@ objectivefunction(δ_guess, σ, θ, κ, distrw, comlang, corrup, N, ξ,
 
 
 ## Solve using a smaller upper bound for δ[6]
-
 # This range is not supported. I think I have to write it in the function
 searchrange = [(1e-006,10), (1e-006,10), (1e-006,10), (1e-006,10),
                     (1e-006,10), (1e-006,6)]
