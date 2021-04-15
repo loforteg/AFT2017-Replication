@@ -194,15 +194,22 @@ objectivefunction(δ_guess, σ, θ, κ, distrw, comlang, corrup, N, ξ,
 
 
 ## Solve using Optim
-# Try this first thing tomorrow!
 δ_star_unbounded = optimize(δ->objectivefunction(δ, σ, θ, κ, distrw, comlang, corrup,
         N, ξ, S, prod_draw_uniform, weights_prod, fc_shock_randn, num_rand_checks,
         rand_check_matrix, nimportingfirms, nfirms, nfirmstot, shareimp_salesq1,
-        shareimp_salesq2, US_median_dom_input), δ_guess)
+        shareimp_salesq2, US_median_dom_input), δ_guess, Optim.Options(g_tol=0.001))
+
+δ0 =  δ_guess = [0.120; 0.020; 0.190; 0.870; -0.390; 0.930]       
+δ_star_unbounded = optimize(δ->objectivefunction(δ, σ, θ, κ, distrw, comlang, corrup,
+        N, ξ, S, prod_draw_uniform, weights_prod, fc_shock_randn, num_rand_checks,
+        rand_check_matrix, nimportingfirms, nfirms, nfirmstot, shareimp_salesq1,
+        shareimp_salesq2, US_median_dom_input), δ0, Optim.Options(g_tol=0.00001))
 
 
 ## Solve using BlackBoxOptim with same search range for all values of δ
 # It has been runnig for 13 hours without finding a solution (I interrupted Julia)
+# I have copied the search range from the original code, but one of the estimates reported in the
+# paper is negative! How is that possible, if they do minimization with boundaries?
 δ_star = bboptimize(δ->objectivefunction(δ, σ, θ, κ, distrw, comlang, corrup,
         N, ξ, S, prod_draw_uniform, weights_prod, fc_shock_randn, num_rand_checks,
         rand_check_matrix, nimportingfirms, nfirms, nfirmstot, shareimp_salesq1,
