@@ -129,9 +129,9 @@ function optimalset(Z, gap_bounds, firm, Z_lb, Z_ub, S, N, num_rand_checks, rand
     # upper bounds are not too different
 
     else
-        print("WARNING! The sourcing strategy may not be solved correctly")
-        print("for firm number")
-        println("$firm")
+        #print("WARNING! The sourcing strategy may not be solved correctly")
+        #print("for firm number")
+        #println("$firm")
         Z_check = repeat(Z_lb, num_rand_checks, 1)
         ind_diffZ = zeros(1,N)
         for i in 1:N
