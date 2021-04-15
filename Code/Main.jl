@@ -167,8 +167,8 @@ function objectivefunction(δ_guess, σ, θ, κ, distrw, comlang, corrup, N, ξ,
     source_start_ub, source_check_ub = upperbound_setup(N, ξ, my_exp)
 
     for firm in 1:S
-        print("Firm number:")
-        println("$firm")
+        #print("Firm number:")
+        #println("$firm")
         Z_lb = lowerbound(source_start_lb, source_check_lb, ϕ_σ_B, fc, N, ξ, my_exp, firm)
         Z_ub = upperbound(source_start_ub, source_check_ub, ϕ_σ_B, fc, N, ξ, my_exp, firm)
         Z = optimalset(Z, gap_bounds, firm, Z_lb, Z_ub, S, N, num_rand_checks,
@@ -180,7 +180,9 @@ function objectivefunction(δ_guess, σ, θ, κ, distrw, comlang, corrup, N, ξ,
     valuetominimize = gmmobjective(sales, input_p_mat, weights_prod,
         nimportingfirms, nfirms, nfirmstot, shareimp_salesq1, shareimp_salesq2,
         US_median_dom_input, N)
-
+    
+    println("$valuetominimize")
+        
     return valuetominimize
 end
 
