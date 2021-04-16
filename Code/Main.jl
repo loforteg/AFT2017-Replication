@@ -140,7 +140,7 @@ post_estimation = 0
 
 ## Simulate firms
 S, prod_draw_uniform, weights_prod, fc_shock_randn, num_rand_checks,
-    rand_check_matrix = simulatefirms(N; S_fixed = 180)
+    rand_check_matrix = simulatefirms(N; S_fixed = 1800)
 
 
 ## Define the problem as a function of δ_guess
