@@ -29,7 +29,6 @@ end
 
 
 ## Jia's lower bound algorithm
-# Something is wrong, they keep stopping at k = 2 and source domestically only
 function lowerbound(source_start, source_check, ϕ_σ_B, fc, N, ξ, my_exp, firm)
 
     # Start iteration for Marginal Benefit (MB)
