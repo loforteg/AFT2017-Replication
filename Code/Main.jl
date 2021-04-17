@@ -203,7 +203,7 @@ objectivefunction(δ_guess, σ, θ, κ, distrw, comlang, corrup, N, ξ,
         shareimp_salesq2, US_median_dom_input), δ0, Optim.Options(g_tol=0.00001))
 
 # Prepare to do loop (first do it manually)        
-for round in 2:10
+for round in 1:10
     guess = δ_guess_all[round,:]
     δ_star_unbounded = optimize(δ->objectivefunction(δ, σ, θ, κ, distrw, comlang, corrup,
             N, ξ, S, prod_draw_uniform, weights_prod, fc_shock_randn, num_rand_checks,
