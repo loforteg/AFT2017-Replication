@@ -97,8 +97,8 @@ ub = 10 * ones(size(δ_guess))
 ub[6] = 6.00
 
 
-## Allow cores to start from different guesses [useless since I do not use them]
-# [I guess I could eliminate lines 99-139]
+## Allow cores to start from different guesses
+# (taken from the original code, but I will not run parallel cores)
 # Initial guesses will be uniformly distributed in a bigger interval:
 MS = 10
 guess_lb = [0.1  ; 0.001 ; 0.1 ; .3 ; .05 ; .5  ]
