@@ -205,11 +205,11 @@ objectivefunction(δ_guess, σ, θ, κ, distrw, comlang, corrup, N, ξ,
 # Prepare to do loop (first do it manually)        
 for round in 1:10
     guess = δ_guess_all[round,:]
-    δ_star_unbounded = optimize(δ->objectivefunction(δ, σ, θ, κ, distrw, comlang, corrup,
+    aux = optimize(δ->objectivefunction(δ, σ, θ, κ, distrw, comlang, corrup,
             N, ξ, S, prod_draw_uniform, weights_prod, fc_shock_randn, num_rand_checks,
             rand_check_matrix, nimportingfirms, nfirms, nfirmstot, shareimp_salesq1,
             shareimp_salesq2, US_median_dom_input), guess, Optim.Options(g_tol=0.00001))
-    δ_hat_all[round,:] = δ_star_unbounded.minimizer'
+    δ_hat_all[round,:] = aux.minimizer'
 end
 
 
