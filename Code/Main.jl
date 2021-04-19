@@ -214,7 +214,7 @@ end
 
 
 ## Solve using BlackBoxOptim with same search range for all values of δ
-# It has been runnig for 13 hours without finding a solution (I interrupted Julia)
+# It has been running for 13 hours without finding a solution (I interrupted Julia)
 # I have copied the search range from the original code, but one of the estimates reported in the
 # paper is negative! How is that possible, if they do minimization with boundaries?
 δ_star = bboptimize(δ->objectivefunction(δ, σ, θ, κ, distrw, comlang, corrup,
